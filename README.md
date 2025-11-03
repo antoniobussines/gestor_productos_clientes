@@ -55,6 +55,16 @@ La entidad **Usuarios** no tiene relación directa con las demás tablas.
 
 ---
 
+## mejoras pendientes
+
+Este proyecto aún está en desarrollo y se encuentra en etapa de ajustes. Algunas de las mejoras planificadas son:
+
+Migrar de SQLite a SQLAlchemy para mejorar la seguridad, flexibilidad y manejo de relaciones entre tablas.
+
+Incorporar Django como framework base para reforzar la estructura del proyecto y facilitar futuras integraciones.
+
+Revisar y ajustar parámetros de la base de datos, eliminando campos innecesarios y corrigiendo incoherencias en el diseño.
+
 ##  Cómo Ejecutar
 
 ```bash
