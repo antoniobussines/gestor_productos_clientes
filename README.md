@@ -61,9 +61,11 @@ Este proyecto aún está en desarrollo y se encuentra en etapa de ajustes. Algun
 
 Migrar de SQLite a SQLAlchemy para mejorar la seguridad, flexibilidad y manejo de relaciones entre tablas.
 
-Incorporar Django como framework base para reforzar la estructura del proyecto y facilitar futuras integraciones.
-
 Revisar y ajustar parámetros de la base de datos, eliminando campos innecesarios y corrigiendo incoherencias en el diseño.
+
+## mejoras realizadas
+
+cambio de sqLite3 a slqAlchemy para optimizar la interacción con la base de datos. y dar mas seguridad
 
 ##  Cómo Ejecutar
 
