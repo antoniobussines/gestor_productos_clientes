@@ -1,7 +1,7 @@
 import tkinter as tk
 from tkinter import ttk, messagebox
-from database import baseDatos
-from database import funcion
+from app.models import funciones_inventario
+from app.models.funcion_iniciar_Sesion import inicioSesion
 
 # ------------------- Aplicación -------------------
 class App:
@@ -32,8 +32,6 @@ class App:
         self.input_password = tk.Entry(self.frame_login, font=("Arial", 11), width=20, bd=1, relief="solid", show="*")
         self.input_password.grid(row=2, column=1, sticky="w", padx=(5,10), pady=5)
 
-        self.objeto_login = funcion.inicioSesion()
-
         boton_inicio = tk.Button(self.frame_login, text="Iniciar Sesión", font=("Arial", 11, "bold"),
                                  bg="#f4f4f4", relief="raised", cursor="hand2", command=self.iniciar_sesion)
         boton_inicio.grid(row=3, column=0, columnspan=2, pady=(15,5), ipadx=10, ipady=3)
@@ -46,9 +44,9 @@ class App:
         if not usuario or not contraseña:
             messagebox.showwarning("Advertencia", "Ingrese usuario y contraseña")
             return
-        if self.objeto_login.login(usuario, contraseña):
-            self.frame_login.place_forget()
-            self.crear_inventario()
+        if inicioSesion.login(usuario, contraseña):
+         self.frame_login.place_forget()
+         self.crear_inventario()
 
     # ------------------- Inventario -------------------
     def crear_inventario(self):
@@ -140,13 +138,13 @@ class App:
 
         def eliminar_productos ():
 
-            baseDatos.funcionesProductos.eliminarProducto(self.tree_prod)
-            baseDatos.funcionesProductos.mostrarProductos(self.tree_prod)
+            funciones_inventario.funcionesProductos.eliminarProducto(self.tree_prod)
+            funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
 
         frm_button_export_p = tk.Frame(self.frm_prod); frm_button_export_p.pack(fill="x",pady=(4,0))
 
         button_export_p = tk.Button(frm_button_export_p, text="Exportar", fg=BTN_FG, bg=BTN_BG,
-                                    command=lambda: baseDatos.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_p.pack(fill="x", expand=True)
+                                    command=lambda: funciones_inventario.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_p.pack(fill="x", expand=True)
 
 
         # ------------------- Formulario Clientes -------------------
@@ -168,9 +166,9 @@ class App:
         btn_frame_cli = tk.Frame(self.frm_cli, bg=FORM_BG)
         btn_frame_cli.pack(fill='x', pady=(8,0))
         bton_cli_agregar = tk.Button(btn_frame_cli, text="Agregar ", bg=BTN_BG, fg=BTN_FG, relief='flat',
-                             command=lambda: [baseDatos.funcionesClientes.agregarCliente(self.entry_cli_nombre.get(), self.entry_cli_tel.get(), self.entry_cli_dir.get()),
-                                              baseDatos.funcionesClientes.mostrarClientes(self.tree_cli),  
-                                              baseDatos.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)])
+                             command=lambda: [funciones_inventario.funcionesClientes.agregarCliente(self.entry_cli_nombre.get(), self.entry_cli_tel.get(), self.entry_cli_dir.get()),
+                                              funciones_inventario.funcionesClientes.mostrarClientes(self.tree_cli),  
+                                              funciones_inventario.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)])
         bton_cli_agregar.pack(side='left', expand=True, fill='x', padx=(0,2))
         bton_cli_limpiar = tk.Button(btn_frame_cli, text="Limpiar", relief='ridge',
                              command=lambda: limpiarCampos('cliente'))
@@ -187,15 +185,15 @@ class App:
 
         def eliminarClientes():
 
-            baseDatos.funcionesClientes.eliminarClientes(self.tree_cli)
-            baseDatos.funcionesClientes.mostrarClientes(self.tree_cli)
+            funciones_inventario.funcionesClientes.eliminarClientes(self.tree_cli)
+            funciones_inventario.funcionesClientes.mostrarClientes(self.tree_cli)
         
 
 
         frm_button_export_c = tk.Frame(self.frm_cli); frm_button_export_c.pack(fill="x",pady=(4,0))
 
         button_export_c = tk.Button(frm_button_export_c, text="Exportar", fg=BTN_FG, bg=BTN_BG,
-                                    command=lambda: baseDatos.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_c.pack(fill="x", expand=True)
+                                    command=lambda: funciones_inventario.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_c.pack(fill="x", expand=True)
 
         # ------------------- Treeviews -------------------
         self.tree_prod = ttk.Treeview(right, columns=("id", "nombre","precio","cantidad"), show='headings')
@@ -217,14 +215,14 @@ class App:
                       
             else:
 
-                 baseDatos.funcionesProductos.agregarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get())
-                 baseDatos.funcionesProductos.mostrarProductos(self.tree_prod)
+                 funciones_inventario.funcionesProductos.agregarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get())
+                 funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
                  limpiarCampos('producto')
            
 
         def botonModificar():
-            baseDatos.funcionesProductos.modificarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get(), True,self.tree_prod)
-            baseDatos.funcionesProductos.mostrarProductos(self.tree_prod)
+            funciones_inventario.funcionesProductos.modificarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get(), True,self.tree_prod)
+            funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
 
         def modificarCliente():
 
@@ -248,8 +246,8 @@ class App:
                     messagebox.showwarning("estado", "escribe el telefono")
                     return
                 
-            baseDatos.funcionesClientes.modificarClientes(nombre,  telefono, direccion, True, self.tree_cli)
-            baseDatos.funcionesClientes.mostrarClientes(self.tree_cli)
+            funciones_inventario.funcionesClientes.modificarClientes(nombre,  telefono, direccion, True, self.tree_cli)
+            funciones_inventario.funcionesClientes.mostrarClientes(self.tree_cli)
 
 
         def limpiarCampos(tipo):
@@ -279,16 +277,16 @@ class App:
             if tipo=='productos':
                 self.frm_prod.pack(fill='both', expand=True)
                 self.tree_prod.pack(fill='both', expand=True)
-                baseDatos.funcionesProductos.mostrarProductos(self.tree_prod)
+                funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
             elif tipo=='clientes':
                 self.frm_cli.pack(fill='both', expand=True)
                 self.tree_cli.pack(fill='both', expand=True)
-                baseDatos.funcionesClientes.mostrarClientes(self.tree_cli)
+                funciones_inventario.funcionesClientes.mostrarClientes(self.tree_cli)
             elif tipo=='reportes':
                 self.tree_prod.pack(fill='both', expand=True)
                 self.tree_cli.pack(fill='both', expand=True)
-                baseDatos.funcionesProductos.mostrarProductos(self.tree_prod)
-                baseDatos.funcionesClientes.mostrarClientes(self.tree_cli)
+                funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
+                funciones_inventario.funcionesClientes.mostrarClientes(self.tree_cli)
 
         # ------------------- Botones menú -------------------
         tk.Button(menu, text="Productos", bg=BTN_BG, fg=BTN_FG, relief='flat',
@@ -302,7 +300,3 @@ class App:
         mostrar_treeview('productos')
 
 
-# ------------------- Ejecutar -------------------
-if __name__ == "__main__":
-    baseDatos.crearTablas.crearTablas()
-    App()

@@ -1,16 +1,16 @@
 from tkinter import messagebox, simpledialog
-from database import baseDatos
-
+from config.conexion import sesion_local
+from app.models.estructura_de_tablas import Personal
+from sqlalchemy import *
 # ------------------- Inicio de sesión -------------------
 class inicioSesion:
 
-    def login(self, usuario, contraseña):
-        conexion = baseDatos.crearTablas.establecerConexion()
-        cursor = conexion.cursor()
+    def login(usuario, contraseña):
+        conexion = sesion_local()
+        
         try:
-            cursor.execute("SELECT * FROM usuarios WHERE nombre=? AND password=?", (usuario, contraseña))
-            resultado = cursor.fetchone()
-            if resultado:
+            registro = conexion.query(Personal).filter(and_(Personal.nombre == usuario, Personal.password == contraseña)).first()
+            if registro:
                 messagebox.showinfo("Estado", "Inicio de sesión correcto")
                 return True
             else:
@@ -24,20 +24,31 @@ class inicioSesion:
 
     @staticmethod
     def crearUsuario():
-        conexion = baseDatos.crearTablas.establecerConexion()
-        cursor = conexion.cursor()
-        nombre = simpledialog.askstring("Usuario", "Ingrese nombre")
-        if nombre is None:
+        
+        conexion = sesion_local()
+
+        nombre_tratado = simpledialog.askstring("Usuario", "Ingrese nombre")
+
+        if nombre_tratado is None:
             messagebox.showinfo("Cancelado", "Operación cancelada")
             return
+        
         contraseña = simpledialog.askstring("Usuario", "Ingrese contraseña")
         if contraseña is None:
             messagebox.showinfo("Cancelado", "Operación cancelada")
             return
+
+        nuevo = Personal(
+            nombre = nombre_tratado,
+            password = contraseña
+        )
+
         try:
-            cursor.execute("INSERT INTO usuarios(nombre, password) VALUES(?,?)", (nombre, contraseña))
+            conexion.add(nuevo)
             conexion.commit()
             messagebox.showinfo("Estado", "Usuario registrado correctamente")
+
+            return [True, nombre_tratado, contraseña]
         except Exception as e:
             messagebox.showerror("Error", f"Error al crear usuario: {e}")
         finally:
