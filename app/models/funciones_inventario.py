@@ -1,7 +1,8 @@
-import sqlite3
+from sqlalchemy import and_
 from config.conexion import sesion_local
 import os
 import json
+from datetime import datetime
 from tkinter import simpledialog
 import tkinter as tk
 from tkinter import ttk
@@ -9,7 +10,7 @@ from openpyxl.worksheet.table import Table, TableStyleInfo
 from tkinter import messagebox
 from openpyxl import Workbook, load_workbook
 from tkinter import messagebox, filedialog
-from app.models.estructura_de_tablas import Productos, Clientes
+from app.models.estructura_de_tablas import Productos, Clientes, Ventas, DetallesVenta
 # ------------------- Funciones Productos -------------------
 class funcionesProductos:
 
@@ -162,16 +163,25 @@ class funcionesProductos:
         try:
          
          filas = conexion.query(Productos).all()
+         total = 0
          
          if tree_prod == None:
 
-            return filas
+            products =[]
+
+            for x in filas:
+                products.append(str(x.nombre))
+            
+            return products
          
          else:
               for i in tree_prod.get_children():
                 tree_prod.delete(i)
               for fila in filas:
-                 tree_prod.insert("", "end", text=fila.id, values=(fila.id, fila.nombre, fila.precio, fila.cantidad))
+                 tree_prod.insert("", "end", text=fila.id, values=(fila.id, fila.nombre, fila.precio, fila.cantidad,float(fila.precio * fila.cantidad)))
+                 total += float(fila.precio * fila.cantidad)
+            
+              return str(total) 
 
         except Exception as error:
 
@@ -181,10 +191,6 @@ class funcionesProductos:
 
             conexion.close()
 
-        
-    
-
-      
 
 # ------------------- Funciones Clientes -------------------
 class funcionesClientes:
@@ -403,3 +409,93 @@ class ExportadorExcel:
 
      except Exception as e:
         messagebox.showerror("Error", f"No se pudo exportar:\n{e}")
+
+
+class ventas:
+
+    def mostrar_ventas(tree):
+
+        conexion = sesion_local()
+
+        registro = conexion.query(DetallesVenta).all()
+
+
+        for i in tree.get_children():
+
+            tree.delete(i)
+
+        
+        for i in registro:
+
+            tree.insert("", "end", 
+                        values = (i.id, 
+                                  i.relacion_ventas.fecha_venta, 
+                                  i.relacion_productos.nombre,
+                                  i.cantidad,
+                                  i.relacion_productos.precio,
+                                  i.relacion_ventas.total
+                                  ))
+    
+    def insertar_venta(nombre, cantidad):
+      conexion = sesion_local()
+
+      try:
+        # Validación de entrada
+        cantidad_tratada = float(cantidad)
+        if cantidad_tratada <= 0:
+            messagebox.showerror("Error", "La cantidad debe ser mayor a cero")
+            return
+
+        # Buscar producto
+        registro = conexion.query(Productos).filter(Productos.nombre == nombre).first()
+        if not registro:
+            messagebox.showerror("Error", "Producto no encontrado")
+            return
+
+        # Validar stock
+        if registro.cantidad < cantidad_tratada:
+            messagebox.showinfo("Estado", f"No hay suficiente stock. Existencias: {registro.cantidad}")
+            return
+
+        # Calcular total y actualizar stock
+        precio = registro.precio
+        total = precio * cantidad_tratada
+        registro.cantidad -= cantidad_tratada
+
+        # Crear venta
+        nueva_venta = Ventas(
+            fecha_venta=datetime.now(),
+            total=total
+        )
+        conexion.add(nueva_venta)
+        conexion.flush()  # Para obtener el ID antes del commit
+
+        # Crear detalle
+        nuevo_detalle = DetallesVenta(
+            venta_id=nueva_venta.id,
+            producto_id=registro.id,
+            cantidad=cantidad_tratada,
+            precio_unitario=precio
+        )
+        conexion.add(nuevo_detalle)
+
+        # Guardar cambios
+        conexion.commit()
+        messagebox.showinfo("Éxito", f"Venta registrada correctamente. Total: ${total:.0f}")
+
+      except ValueError:
+        messagebox.showerror("Error", "La cantidad ingresada no es válida")
+      except Exception as e:
+        messagebox.showerror("Error inesperado", f"Ocurrió un problema: {str(e)}")
+      finally:
+        conexion.close()
+
+        
+
+
+
+
+
+
+
+

@@ -12,15 +12,11 @@ class funciones_generales:
     def crear_persona():
 
        datos = inicioSesion.crearUsuario()
-       inicioSesion.login(datos[0], datos[1], datos[2])
+       inicioSesion.login(datos[1], datos[2])
 
     def ejecutar_programa():
 
         instancia = App()
-
-       
-
-
 
 funciones_generales.ejecutar_programa()
 
