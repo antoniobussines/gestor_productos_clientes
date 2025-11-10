@@ -68,9 +68,10 @@ Revisar y ajustar parámetros de la base de datos, eliminando campos innecesario
 
 1--cambio de sqLite3 a slqAlchemy para optimizar la interacción con la base de datos. y dar mas seguridad
 
-2--se han modificado las tablas y se an agregado  tablas para las ventas que aunque no es una aplicacion que se enfoque en ventassirve para simular la interacion 
+2--se han modificado las tablas y se an agregado  tablas para las ventas que aunque no es una aplicacion que se enfoque en ventas sirve para simular la interacion 
 
-tablas agregadas ventas DetallesVentas 
+tablas agregadas con el stock de productos  
+
 
 ##  Cómo Ejecutar
 
