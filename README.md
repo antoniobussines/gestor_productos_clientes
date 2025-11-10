@@ -49,7 +49,8 @@ La entidad **Usuarios** no tiene relación directa con las demás tablas.
 ##  Tecnologías Utilizadas
 
 - **Python 3**: Lenguaje de programación principal.
-- **SQLite3**: Motor de base de datos relacional.
+- **SQLite**: Motor de base de datos relacional.
+- **SqlAlchemy**: traductor entre el motor y python 
 - **unittest**: Framework para pruebas automatizadas.
 - **openpyxl**: Librería para exportar datos a archivos Excel.
 
@@ -65,7 +66,11 @@ Revisar y ajustar parámetros de la base de datos, eliminando campos innecesario
 
 ## mejoras realizadas
 
-cambio de sqLite3 a slqAlchemy para optimizar la interacción con la base de datos. y dar mas seguridad
+1--cambio de sqLite3 a slqAlchemy para optimizar la interacción con la base de datos. y dar mas seguridad
+
+2--se han modificado las tablas y se an agregado  tablas para las ventas que aunque no es una aplicacion que se enfoque en ventassirve para simular la interacion 
+
+tablas agregadas ventas DetallesVentas 
 
 ##  Cómo Ejecutar
 
