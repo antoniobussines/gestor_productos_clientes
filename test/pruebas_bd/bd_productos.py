@@ -1,10 +1,10 @@
 import unittest
-from database.baseDatos import funcionesProductos
+from app.models.funciones_inventario import funcionesProductos
 
 class TestProductos(unittest.TestCase):
 
     def test_insertar_producto(self):
-        nuevo_id = funcionesProductos.agregarProducto("TestProducto", 99.99, 10, True)
+        nuevo_id = funcionesProductos.agregarProducto("soda",976, 10, True)
         self.assertIsInstance(nuevo_id, int)
         
         productos = funcionesProductos.mostrarProductos()

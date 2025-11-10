@@ -140,18 +140,14 @@ class App:
         def eliminar_productos ():
 
             funciones_inventario.funcionesProductos.eliminarProducto(self.tree_prod)
-            dale = funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
-            texto.config(text= dale)
+            funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
+           
 
         frm_button_export_p = tk.Frame(self.frm_prod); frm_button_export_p.pack(fill="x",pady=(4,0))
 
         button_export_p = tk.Button(frm_button_export_p, text="Exportar", fg=BTN_FG, bg=BTN_BG,
                                     command=lambda: funciones_inventario.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_p.pack(fill="x", expand=True)
         
-        texto =tk.Label(frm_button_export_p, text="sos")
-        texto.pack()
-        
-
         # ------------------- Formulario Clientes -------------------
         self.frm_cli = tk.Frame(left, bg=FORM_BG, padx=10, pady=10)
         tk.Label(self.frm_cli, text="Ingreso de Cliente", bg=FORM_BG, font=("Segoe UI",12,"bold")).pack(anchor='w', pady=(0,8))
@@ -201,7 +197,7 @@ class App:
                                     command=lambda: funciones_inventario.ExportadorExcel.exportar(self.tree_prod, self.tree_cli)); button_export_c.pack(fill="x", expand=True)
         
         # ---------------------- Ventas ----------------------
-        self.frm_ventas = tk.Frame(left, bd=2, relief="groove", padx=10, pady=10)
+        self.frm_ventas = tk.Frame(left, bd=2, padx=10, pady=10, bg=FORM_BG)
         self.frm_ventas.pack(fill="x", pady=10)
 
         # Título
@@ -209,12 +205,13 @@ class App:
 
         # Combobox de productos
         self.combo_productos = ttk.Combobox(self.frm_ventas, values=[], state="readonly", font=("Arial", 11))
-        self.combo_productos.set("Selecciona un producto")
         self.combo_productos.pack(fill="x", pady=5)
+        self.combo_productos.set("Selecciona un producto")
 
         # Entrada de cantidad
         self.entry_ventas_cantidad = tk.Entry(self.frm_ventas, font=("Arial", 11))
         self.entry_ventas_cantidad.pack(fill="x", pady=5)
+        self.entry_ventas_cantidad.insert(0, "escribe la cantidad")
 
         # Botón de registrar venta
         self.btn_registrar_venta = tk.Button(
@@ -229,9 +226,7 @@ class App:
 
         def  insertar_venta():
             
-            
-            self.entry_ventas_cantidad.get()
-            funciones_inventario.ventas.insertar_venta(Combobox.get(), self.entry_ventas_cantidad.get())
+            funciones_inventario.ventas.insertar_venta(self.combo_productos.get(), self.entry_ventas_cantidad.get())
             funciones_inventario.ventas.mostrar_ventas(self.tree_ventas)
        
         def optionCombobox(event):
@@ -242,7 +237,22 @@ class App:
     
         self.combo_productos.bind("<Button-1>", optionCombobox)
 
+        def placeholderVentaIn(event):
+
+            if self.entry_ventas_cantidad.get() =="escribe la cantidad":
+
+                self.entry_ventas_cantidad.delete(0,tk.END)
+
+        def placeholderVentaOut(event):
+
+            if self.entry_ventas_cantidad.get()  == "":
+
+                self.entry_ventas_cantidad.insert(0, "escribe la cantidad")
+
         
+        self.entry_ventas_cantidad.bind("<FocusIn>", placeholderVentaIn)
+        self.entry_ventas_cantidad.bind("<FocusOut>", placeholderVentaOut)
+
 
 
         # ------------------- Treeviews -------------------
@@ -271,13 +281,14 @@ class App:
             else:
 
                  funciones_inventario.funcionesProductos.agregarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get())
-                 dale = funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
-                 texto.config(text=dale)
+                 funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)                
                  limpiarCampos('producto')
            
 
         def botonModificar():
-            funciones_inventario.funcionesProductos.modificarProducto(self.entry_nombre.get(), self.entry_precio.get(), self.entry_cantidad.get(), True,self.tree_prod)
+            cantidad = self.entry_cantidad.get()
+            precio = self.entry_precio.get()
+            funciones_inventario.funcionesProductos.modificarProducto(self.entry_nombre.get(),precio , cantidad , True,self.tree_prod)
             funciones_inventario.funcionesProductos.mostrarProductos(self.tree_prod)
 
         def modificarCliente():
@@ -364,7 +375,7 @@ class App:
                   command= lambda: mostrar_treeview('ventas')).pack(side ="left", expand=True, fill="x", padx=4)
 
         # Mostrar productos por defecto
-        textooooo =mostrar_treeview('productos')
-        texto.config(text=textooooo)
+        mostrar_treeview('productos')
+        
 
 

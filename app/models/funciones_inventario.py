@@ -13,20 +13,21 @@ from tkinter import messagebox, filedialog
 from app.models.estructura_de_tablas import Productos, Clientes, Ventas, DetallesVenta
 # ------------------- Funciones Productos -------------------
 class funcionesProductos:
+  
 
     @staticmethod
-    def agregarProducto(nombre, precio, cantidad, modo=None):
-        conexion = sesion_local()
-
-
-        nuevo =Productos(
-
-            nombre = nombre,
-            precio = precio,
-            cantidad = cantidad
-        )
+    def agregarProducto(nombre, precio, cantidad, modo=None):  
 
         try:
+
+            conexion = sesion_local()
+
+            nuevo =Productos(
+
+             nombre = nombre,
+             precio = precio,
+             cantidad = cantidad
+            )
             conexion.add(nuevo)
             conexion.commit()
 
@@ -69,10 +70,18 @@ class funcionesProductos:
                 producto = conexion.query(Productos).filter(Productos.id == id).first()
 
                 if producto:
+                       
+                    if nombre not in(None,"", "escribe el nombre"):
+                           
+                           producto.nombre = nombre
+                       
+                    if precio not in(None,"", "escribe el precio"):
+                           
+                           producto.precio = precio
 
-                    producto.nombre = nombre
-                    producto.precio = precio
-                    producto.cantidad = cantidad 
+                    if cantidad not in(None,"", "escriba la cantidad"):
+                           producto.cantidad = cantidad
+                     
 
                     messagebox.showinfo("estado", "registro actualizado")   
 
@@ -88,10 +97,19 @@ class funcionesProductos:
 
                      if producto:
                        
-                       producto.nombre = nombre
-                       producto.precio = precio
-                       producto.cantidad = cantidad
+                       
+                       
+                       if nombre not in(None,"", "escribe el nombre"):
+                           
+                           producto.nombre = nombre
+                       
+                       if precio not in(None,"", "escribe el precio"):
+                           
+                           producto.precio = precio
 
+                       if cantidad not in(None,"", "escriba la cantidad"):
+                           producto.cantidad = cantidad
+                    
                        messagebox.showinfo("estado", "registro actualizado")
             
                      else:
@@ -163,7 +181,6 @@ class funcionesProductos:
         try:
          
          filas = conexion.query(Productos).all()
-         total = 0
          
          if tree_prod == None:
 
@@ -178,11 +195,8 @@ class funcionesProductos:
               for i in tree_prod.get_children():
                 tree_prod.delete(i)
               for fila in filas:
-                 tree_prod.insert("", "end", text=fila.id, values=(fila.id, fila.nombre, fila.precio, fila.cantidad,float(fila.precio * fila.cantidad)))
-                 total += float(fila.precio * fila.cantidad)
-            
-              return str(total) 
-
+                 tree_prod.insert("", "end", text=fila.id, values=(fila.id, fila.nombre, fila.precio, fila.cantidad,float(fila.precio * float(fila.cantidad))))
+       
         except Exception as error:
 
             messagebox.showerror("estado", "error inseperado codigo de error" + str(error))   
@@ -307,19 +321,32 @@ class funcionesClientes:
                 registro = conexion.query(Clientes).filter(Clientes.id == indice).first()
                 if registro:
                     
+                    
+                    if nombre not in(None, "", "escribe el nombre"):
+                      registro.nombre = nombre
+                 
+                    if telefono not in(None, "", "escribe el telefono"):
+                      registro.telefono = telefono
+                 
+                    if direccion not in(None, "", "escribe la direccion"):
+                      registro.direccion = direccion
+
                     messagebox.showinfo("estado", "registro actualizado")
-                    registro.nombre = nombre
-                    registro.telefono = telefono
-                    registro.direccion = direccion
                               
             else:
                 indice = simpledialog.askinteger("estado", "ingresa el indice")
                 registro = conexion.query(Clientes).filter(Clientes.id == indice).first()
 
                 if registro:
-                 registro.nombre = nombre
-                 registro.telefono = telefono
-                 registro.direccion = direccion
+                 
+                 if nombre not in(None, "", "escribe el nombre"):
+                    registro.nombre = nombre
+                 
+                 if telefono not in(None, "", "escribe el telefono"):
+                    registro.telefono = telefono
+                 
+                 if direccion not in(None, "", "escribe la direccion"):
+                    registro.direccion = direccion
                       
             conexion.commit()
 

@@ -1,5 +1,5 @@
 import unittest
-from database.baseDatos import funcionesClientes
+from app.models.funciones_inventario import funcionesClientes
 
 class TestClientes(unittest.TestCase):
 

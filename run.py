@@ -2,6 +2,7 @@ from config.conexion import Base, engine_creator
 from app.models.funcion_iniciar_Sesion import inicioSesion
 from app.controlers.interfaz import App
 
+
 class funciones_generales:
 
     def crear_tablas():
@@ -19,4 +20,9 @@ class funciones_generales:
         instancia = App()
 
 funciones_generales.ejecutar_programa()
+    
+
+
+
+
 
